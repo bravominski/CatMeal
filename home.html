@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Hungry Cat - Cat Meal Tracker</title>
     <!--Import Google Icon Font-->
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="css/style.css"/>
@@ -16,9 +16,21 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script type="text/javascript">
+      var mealCount = 0;
+      function reset() {
+        anchors = $(document).find("a");
+        for(var i = 0; i < anchors.length; i++) {
+          $(anchors[i]).removeClass("disabled");
+        }
+        mealCount = 0;
+      }
       $(document).ready(function() {
         $("a").click(function() {
           $(this).addClass("disabled");
+          mealCount++;
+          if(mealCount == 4) {
+            reset();
+          }
         })
       });
     </script>
