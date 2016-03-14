@@ -26,8 +26,10 @@
       }
       $(document).ready(function() {
         $("a").click(function() {
-          $(this).addClass("disabled");
-          mealCount++;
+          if(!$(this).hasClass("disabled")) {
+            $(this).addClass("disabled");
+            mealCount++;
+          }
           if(mealCount == 4) {
             reset();
           }
