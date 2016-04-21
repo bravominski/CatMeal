@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hungry Cat - Cat Meal Tracker</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body class="container red lighten-3">
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script type="text/javascript">
+      var ref = new Firebase("https://sweltering-fire-525.firebaseio.com/");
+      var mealRef = ref.child("meals");
+      var countRef = ref.child("count");
+
+      function reset() {
+        anchors = $(document).find("a");
+        for(var i = 0; i < anchors.length; i++) {
+          $(anchors[i]).removeClass("disabled");
+        }
+        mealRef.set({
+          dryB: 0,
+          wetB: 0,
+          dryD: 0,
+          wetD: 0
+        });
+        countRef.set({
+          count: 0
+        })
+      }
+      $(document).ready(function() {
+        var mealCount;
+        mealRef.on("value", function(snapshot) {
+          var meals = snapshot.val();
+          if (meals.dryB == 1 && !$("#dryB").hasClass("disabled")) {
+            $("#dryB").addClass("disabled");
+          }
+          if (meals.wetB == 1 && !$("#wetB").hasClass("disabled")) {
+            $("#wetB").addClass("disabled");
+          }
+          if (meals.dryD == 1 && !$("#dryD").hasClass("disabled")) {
+            $("#dryD").addClass("disabled");
+          }
+          if (meals.wetD == 1 && !$("#wetD").hasClass("disabled")) {
+            $("#wetD").addClass("disabled");
+          }
+          mealCount = meals.dryB + meals.wetB + meals.dryD + meals.wetD;
+        });
+        $("a").click(function() {
+          id = $(this)[0].id;
+          if(!$(this).hasClass("disabled")) {
+            $(this).addClass("disabled");
+            mealRef.child(id).set(1);
+            countRef.child("count").set(mealCount);
+          }
+        });
+      });
+      countRef.on("child_changed", function(snapshot) {
+        var changed = snapshot.val();
+        if(changed == 4) {
+          reset();
+        }
+      });
+    </script>
+
+    <div class="col s12">
+      <img src="garfield.gif" alt="img not available" />
+    </div>
+    <div class="row">
+      <div class="col s10 offset-s1">
+        <a class="waves-effect waves-light btn-large" id="dryB">Breakfast DRY</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10 offset-s1">
+        <a class="waves-effect waves-light btn-large" id="wetB">Breakfast WET</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10 offset-s1">
+        <a class="waves-effect waves-light btn-large" id="dryD">Dinner DRY</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10 offset-s1">
+        <a class="waves-effect waves-light btn-large" id="wetD">Dinner WET</a>
+      </div>
+    </div>
+  </body>
+</html>
